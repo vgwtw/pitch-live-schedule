@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>期末提案賽籌備進度</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: broadcast rundown — a vertical run sheet of weeks, each row a "segment" with timecode-style dates on the left */
+:root {
+  --bg: #F2F4F7;
+  --surface: #FFFFFF;
+  --ink: #161A26;
+  --muted: #5B6275;
+  --line: #DCE0E8;
+  --live: #E0372B;
+  --live-soft: #FDECEA;
+  --a: #2F6FDB;   /* 賽務 */
+  --b: #8A4BD6;   /* 節目製作 */
+  --c: #11906E;   /* 視覺設計 */
+  --seg-open: #5B6275;
+  --font-display: "Chakra Petch", "Noto Sans TC", system-ui, sans-serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F121A; --surface: #171B26; --ink: #E8EBF2; --muted: #9AA2B5; --line: #2A3040;
+    --live: #FF5A4E; --live-soft: #3A1B1A; --a: #6C9DF0; --b: #B58AF0; --c: #3CC79E; --seg-open: #59607A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F121A; --surface: #171B26; --ink: #E8EBF2; --muted: #9AA2B5; --line: #2A3040;
+  --live: #FF5A4E; --live-soft: #3A1B1A; --a: #6C9DF0; --b: #B58AF0; --c: #3CC79E; --seg-open: #59607A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 920px; margin: 0 auto; display: grid; gap: 40px; }
+h1, h2 { text-wrap: balance; margin: 0; }
+
+/* header */
+header { display: grid; gap: 16px; }
+.onair {
+  display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+  font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: .14em;
+  color: var(--live); border: 1.5px solid var(--live); padding: 3px 10px; border-radius: 3px;
+}
+.onair i { width: 8px; height: 8px; border-radius: 50%; background: var(--live); animation: blink 1.6s infinite; }
+@keyframes blink { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .onair i { animation: none; } }
+h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 900; line-height: 1.2; }
+.lede { color: var(--muted); margin: 0; max-width: 60ch; }
+.stats { display: flex; flex-wrap: wrap; gap: 12px 32px; padding-top: 8px; border-top: 1px solid var(--line); }
+.stat { display: grid; }
+.stat b { font-family: var(--font-display); font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.3; }
+.stat span { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+.stat.hot b { color: var(--live); }
+
+/* sections */
+section { display: grid; gap: 16px; }
+h2 { font-size: 20px; font-weight: 700; display: flex; align-items: baseline; gap: 10px; }
+h2 small { font-family: var(--font-display); font-size: 12px; color: var(--muted); letter-spacing: .12em; font-weight: 500; }
+.sub { margin: 0; color: var(--muted); max-width: 65ch; }
+
+/* roles */
+.roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.role { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 4px; }
+.role h3 { margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.role p { margin: 0; color: var(--muted); font-size: 13.5px; }
+
+.tag {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px;
+  font-family: var(--font-display); font-weight: 700; font-size: 12px; border-radius: 3px; color: #fff;
+}
+.tag.a { background: var(--a); } .tag.b { background: var(--b); } .tag.c { background: var(--c); }
+.tag.all { background: var(--ink); color: var(--bg); }
+
+/* show clock */
+.clock { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 16px; }
+.bar { display: flex; height: 40px; border-radius: 4px; overflow: hidden; gap: 2px; }
+.bar > div {
+  display: grid; place-items: center; color: #fff; font-family: var(--font-display); font-weight: 700;
+  font-size: 12px; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; white-space: nowrap;
+}
+.bar .o { background: var(--seg-open); }
+.bar .t { background: var(--live); }
+.bar .j { background: var(--b); }
+.bar .e { background: var(--ink); color: var(--bg); }
+.scale { display: flex; justify-content: space-between; font-family: var(--font-display); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: -10px; }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: .04em; }
+td.min { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+th.min { text-align: right; }
+tr.total td { border-bottom: none; font-weight: 700; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 8px; vertical-align: 0; }
+.verdict { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding-top: 4px; border-top: 1px solid var(--line); }
+.verdict b { font-family: var(--font-display); font-size: 30px; color: var(--live); line-height: 1.2; }
+.verdict p { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1 1 280px; min-width: 0; }
+
+/* rundown */
+.rundown { display: grid; border-top: 2px solid var(--ink); }
+.seg {
+  display: grid; grid-template-columns: 132px 1fr; gap: 20px;
+  padding: 18px 0; border-bottom: 1px solid var(--line); position: relative;
+}
+.seg .when { display: grid; align-content: start; gap: 2px; }
+.seg .wk { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: .04em; }
+.seg .dates { font-family: var(--font-display); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.seg .body { display: grid; gap: 8px; min-width: 0; }
+.seg .title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-weight: 700; font-size: 16.5px; }
+.flag {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .06em; padding: 1px 8px; border-radius: 3px;
+  background: var(--live-soft); color: var(--live);
+}
+.now-flag { background: var(--ink); color: var(--bg); }
+.tasks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.tasks li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; }
+.tasks li .tag { margin-top: 2px; }
+.seg.milestone .wk { color: var(--live); }
+.seg.dday { background: var(--live-soft); border-bottom-color: var(--live); padding-inline: 14px; margin-inline: -14px; border-radius: 4px; }
+.seg.dday .wk, .seg.dday .title { color: var(--live); }
+.seg.current::before {
+  content: ""; position: absolute; left: -14px; top: 18px; bottom: 18px; width: 4px; background: var(--ink); border-radius: 2px;
+}
+
+/* notes */
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.note h3 { margin: 0; font-size: 15px; }
+.note ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.note.warn { border-color: var(--live); }
+.note.warn h3 { color: var(--live); }
+footer { color: var(--muted); font-size: 12.5px; }
+
+@media (max-width: 560px) {
+  .seg { grid-template-columns: 1fr; gap: 8px; }
+  .seg .when { display: flex; align-items: baseline; gap: 10px; }
+  .seg.current::before { left: -10px; width: 3px; }
+  .bar > div span { display: none; }
+}
+</style>
+<style>[hidden]{display:none!important} img{max-width:100%} :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="onair"><i></i>LIVE · 1/4 MON · 120 MIN</span>
+    <h1>期末提案賽直播・籌備進度表</h1>
+    <p class="lede">修課學生全員參加，直播前兩週選出決賽組進行轉播。節目形式像電競、運動賽事，除了評審講評，還有主持人在旁邊串場做效果。這份進度只列必要工作。</p>
+    <div class="stats">
+      <div class="stat hot"><b id="countdown">—</b><span>距離直播（天）</span></div>
+      <div class="stat"><b>2027/1/4</b><span>直播日（星期一）</span></div>
+      <div class="stat"><b>12/21</b><span>公布決賽組</span></div>
+      <div class="stat"><b>5 組</b><span>決賽組數</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>分工<small>CREW</small></h2>
+    <div class="roles">
+      <div class="role"><h3><span class="tag a">A</span>賽務</h3><p>賽制、評分、初選、評審、學生溝通</p></div>
+      <div class="role"><h3><span class="tag b">B</span>節目製作</h3><p>節目流程、主持人、直播技術、彩排</p></div>
+      <div class="role"><h3><span class="tag c">C</span>視覺設計</h3><p>主視覺、直播畫面元素、決賽組素材</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>兩小時怎麼分<small>SHOW CLOCK</small></h2>
+    <p class="sub">決賽 5 組，每組 18 分鐘，包含提案 10 分鐘、評審講評 6 分鐘、主持人串場與換場 2 分鐘。加上開場、評審討論和頒獎，剛好 120 分鐘。</p>
+    <div class="clock">
+      <div class="bar" aria-label="120 分鐘節目時間分配">
+        <div class="o" style="flex:10"><span>開場</span></div>
+        <div class="t" style="flex:18">1</div>
+        <div class="t" style="flex:18">2</div>
+        <div class="t" style="flex:18">3</div>
+        <div class="t" style="flex:18">4</div>
+        <div class="t" style="flex:18">5</div>
+        <div class="j" style="flex:8"><span>討論</span></div>
+        <div class="e" style="flex:12"><span>頒獎</span></div>
+      </div>
+      <div class="scale"><span>0:00</span><span>0:30</span><span>1:00</span><span>1:30</span><span>2:00</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>段落</th><th>內容</th><th class="min">分鐘</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dot" style="background:var(--seg-open)"></span>開場</td><td>主持人開場、介紹評審、說明賽制與評分方式</td><td class="min">10</td></tr>
+            <tr><td><span class="dot" style="background:var(--live)"></span>決賽 × 5 組</td><td>每組：提案 10、評審講評 6、主持人串場與換場 2</td><td class="min">90</td></tr>
+            <tr><td><span class="dot" style="background:var(--b)"></span>評審討論</td><td>評審離席計分，主持人帶觀眾投票、回顧各組精彩片段</td><td class="min">8</td></tr>
+            <tr><td><span class="dot" style="background:var(--ink)"></span>頒獎與結尾</td><td>公布名次與人氣獎、得獎感言、結尾</td><td class="min">12</td></tr>
+            <tr class="total"><td>合計</td><td></td><td class="min">120</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="verdict">
+        <b>5 組</b>
+        <p>直播當天如果時間超出，先從評審討論時段調整，各組提案時間不動。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>每週進度<small>RUNDOWN</small></h2>
+    <div class="rundown">
+
+      <div class="seg" data-start="2026-10-26" data-end="2026-11-01">
+        <div class="when"><span class="wk">W1</span><span class="dates">10/26–11/1</span></div>
+        <div class="body">
+          <div class="title">定規格</div>
+          <ul class="tasks">
+            <li><span class="tag a">A</span><span>定初選方式與標準、決賽評分標準、獎項、決賽組數</span></li>
+            <li><span class="tag b">B</span><span>決定直播平台，以及現場在哪裡錄、線上或實體</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg milestone" data-start="2026-11-02" data-end="2026-11-08">
+        <div class="when"><span class="wk">W2</span><span class="dates">11/2–11/8</span></div>
+        <div class="body">
+          <div class="title">對學生公布<span class="flag">里程碑</span></div>
+          <ul class="tasks">
+            <li><span class="tag a">A</span><span>跟學生說明：初選方式、繳交期限、決賽直播日期、評分標準</span></li>
+            <li><span class="tag a">A</span><span><strong>邀評審並確認 1/4 檔期</strong></span></li>
+            <li><span class="tag b">B</span><span>邀主持人並確認 1/4 與彩排檔期</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg" data-start="2026-11-09" data-end="2026-11-22">
+        <div class="when"><span class="wk">W3–4</span><span class="dates">11/9–11/22</span></div>
+        <div class="body">
+          <div class="title">技術與視覺方向</div>
+          <ul class="tasks">
+            <li><span class="tag b">B</span><span>確定直播設備與場地（借用或租用）</span></li>
+            <li><span class="tag b">B</span><span>依上方時間分配寫出節目流程表</span></li>
+            <li><span class="tag c">C</span><span>主視覺定案</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg" data-start="2026-11-23" data-end="2026-12-06">
+        <div class="when"><span class="wk">W5–6</span><span class="dates">11/23–12/6</span></div>
+        <div class="body">
+          <div class="title">直播畫面模板</div>
+          <ul class="tasks">
+            <li><span class="tag c">C</span><span>做計分板、提案倒數計時、隊伍資訊條、轉場，先做成模板，決賽組確定後直接替換內容</span></li>
+            <li><span class="tag b">B</span><span>主持人腳本框架：固定段落的台詞與串場點，各組內容先留空</span></li>
+            <li><span class="tag a">A</span><span>決賽計分方式：評審分數怎麼即時收、怎麼顯示在畫面上</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg" data-start="2026-12-07" data-end="2026-12-13">
+        <div class="when"><span class="wk">W7</span><span class="dates">12/7–12/13</span></div>
+        <div class="body">
+          <div class="title">技術測試</div>
+          <ul class="tasks">
+            <li><span class="tag b">B</span><span>用模板實際推一次串流：收音、切換畫面、計時器、計分板</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg milestone" data-start="2026-12-14" data-end="2026-12-20">
+        <div class="when"><span class="wk">W8</span><span class="dates">12/14–12/20</span></div>
+        <div class="body">
+          <div class="title">初選</div>
+          <ul class="tasks">
+            <li><span class="tag a">A</span><span>收各組提案，評選出決賽組</span></li>
+            <li><span class="tag a">A</span><span>先通知決賽組準備素材：隊名、隊照、logo、一句話口號</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg milestone" data-start="2026-12-21" data-end="2026-12-27">
+        <div class="when"><span class="wk">W9</span><span class="dates">12/21–12/27</span></div>
+        <div class="body">
+          <div class="title">公布決賽組<span class="flag">12/21</span></div>
+          <ul class="tasks">
+            <li><span class="tag a">A</span><span>公布決賽名單與出場順序</span></li>
+            <li><span class="tag c">C</span><span>把決賽組素材套進畫面模板</span></li>
+            <li><span class="tag b">B</span><span>主持人拿到各組資料，補完腳本</span></li>
+            <li><span class="tag a">A</span><span>寄評審資料：評分表、各組簡介</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg milestone" data-start="2026-12-28" data-end="2027-01-03">
+        <div class="when"><span class="wk">W10</span><span class="dates">12/28–1/3</span></div>
+        <div class="body">
+          <div class="title">總彩排<span class="flag">建議 12/29 或 12/30</span></div>
+          <ul class="tasks">
+            <li><span class="tag a">A</span><span>決賽組簡報定稿（彩排前交）</span></li>
+            <li><span class="tag all">全</span><span>決賽組與主持人到場，照 120 分鐘完整跑一遍，在元旦前修完問題</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seg dday" data-start="2027-01-04" data-end="2027-01-04">
+        <div class="when"><span class="wk">D-DAY</span><span class="dates">1/4（一）</span></div>
+        <div class="body">
+          <div class="title">直播</div>
+          <ul class="tasks">
+            <li><span class="tag b">B</span><span>開播前 3 小時進場架設，2 小時前做技術確認</span></li>
+            <li><span class="tag a">A</span><span>開播前 1 小時決賽組報到</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>注意事項<small>NOTES</small></h2>
+    <div class="notes">
+      <div class="note warn">
+        <h3>12/21 之後只有兩週</h3>
+        <ul>
+          <li>畫面和主持人腳本要在初選前做成模板，決賽組確定後只換內容</li>
+          <li>總彩排落在元旦連假前，彩排日期請在 W2 就跟主持人、決賽可能人選先約好</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>評審檔期</h3>
+        <ul>
+          <li>1/4 是連假後第一天，W2 一定要確認評審能到</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>本週要先決定</h3>
+        <ul>
+          <li>初選怎麼選、誰來選</li>
+          <li>線上或實體</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>週次以星期一為一週開始。目前所在週會在左側標示「本週」。</footer>
+</div>
+
+<script>
+(function () {
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var live = new Date(2027, 0, 4);
+  var days = Math.round((live - today) / 86400000);
+  document.getElementById('countdown').textContent = days > 0 ? days : (days === 0 ? '今天' : '已結束');
+  function parse(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  document.querySelectorAll('.seg').forEach(function (seg) {
+    var s = parse(seg.dataset.start), e = parse(seg.dataset.end);
+    if (today >= s && today <= e) {
+      seg.classList.add('current');
+      var f = document.createElement('span'); f.className = 'flag now-flag'; f.textContent = '本週';
+      seg.querySelector('.title').appendChild(f);
+    }
+  });
+})();
+</script>
+</body>
+</html>
