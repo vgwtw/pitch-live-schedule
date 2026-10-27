@@ -22,6 +22,8 @@
   --b: #8A4BD6;   /* 節目製作 */
   --c: #11906E;   /* 視覺設計 */
   --seg-open: #5B6275;
+  --on-role: #FFFFFF;
+  --now-band: rgba(22, 26, 38, .07);
   --font-display: "Chakra Petch", "Noto Sans TC", system-ui, sans-serif;
   --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
@@ -29,12 +31,14 @@
   :root:not([data-theme="light"]) {
     --bg: #0F121A; --surface: #171B26; --ink: #E8EBF2; --muted: #9AA2B5; --line: #2A3040;
     --live: #FF5A4E; --live-soft: #3A1B1A; --a: #6C9DF0; --b: #B58AF0; --c: #3CC79E; --seg-open: #59607A;
+    --on-role: #0F121A; --now-band: rgba(232, 235, 242, .08);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0F121A; --surface: #171B26; --ink: #E8EBF2; --muted: #9AA2B5; --line: #2A3040;
   --live: #FF5A4E; --live-soft: #3A1B1A; --a: #6C9DF0; --b: #B58AF0; --c: #3CC79E; --seg-open: #59607A;
+  --on-role: #0F121A; --now-band: rgba(232, 235, 242, .08);
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -108,6 +112,41 @@ tr.total td { border-bottom: none; font-weight: 700; }
 .verdict { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding-top: 4px; border-top: 1px solid var(--line); }
 .verdict b { font-family: var(--font-display); font-size: 30px; color: var(--live); line-height: 1.2; }
 .verdict p { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1 1 280px; min-width: 0; }
+
+/* timeline: weeks across, one row per role */
+.gantt-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+.gantt {
+  display: grid; min-width: 820px; padding: 0 8px 8px 0;
+  grid-template-columns: 88px repeat(11, minmax(60px, 1fr));
+  grid-template-rows: auto repeat(4, minmax(56px, auto));
+}
+.guide { grid-row: 1 / -1; border-left: 1px dashed var(--line); }
+.band { grid-row: 1 / -1; background: var(--now-band); border-radius: 4px; }
+.gh { grid-row: 1; z-index: 1; display: grid; justify-items: center; padding: 10px 2px 8px; font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+.gh b { font-size: 13px; }
+.gh span { font-size: 11px; color: var(--muted); }
+.gh.now b { color: var(--live); }
+.gh.d b { color: var(--live); }
+.rl {
+  grid-column: 1; position: sticky; left: 0; z-index: 3; background: var(--surface);
+  display: flex; align-items: center; gap: 6px; padding: 0 10px; font-size: 13px; font-weight: 700;
+  border-top: 1px solid var(--line);
+}
+.gbar {
+  z-index: 2; align-self: center; margin: 6px 3px; padding: 5px 7px; border-radius: 4px;
+  font-size: 11.5px; line-height: 1.35; font-weight: 500; color: var(--on-role);
+}
+.gbar.a { background: var(--a); } .gbar.b { background: var(--b); } .gbar.c { background: var(--c); }
+.ms {
+  z-index: 2; align-self: center; justify-self: center; display: grid; justify-items: center; gap: 5px;
+  padding: 4px 2px; font-size: 11.5px; font-weight: 700; color: var(--live); text-align: center; line-height: 1.3;
+}
+.ms::before { content: ""; width: 11px; height: 11px; background: var(--live); transform: rotate(45deg); }
+.ms.d::before { width: 15px; height: 15px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+.legend i.dia { width: 9px; height: 9px; border-radius: 0; background: var(--live); transform: rotate(45deg); }
 
 /* rundown */
 .rundown { display: grid; border-top: 2px solid var(--ink); }
@@ -207,6 +246,63 @@ footer { color: var(--muted); font-size: 12.5px; }
       <div class="verdict">
         <b>5 組</b>
         <p>直播當天如果時間超出，先從評審討論時段調整，各組提案時間不動。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>進度總覽<small>TIMELINE</small></h2>
+    <div class="legend">
+      <span><i style="background:var(--a)"></i>A 賽務</span>
+      <span><i style="background:var(--b)"></i>B 節目製作</span>
+      <span><i style="background:var(--c)"></i>C 視覺設計</span>
+      <span><i class="dia"></i>里程碑</span>
+      <span><i style="background:var(--now-band);border:1px solid var(--line)"></i>本週</span>
+    </div>
+    <div class="gantt-wrap">
+      <div class="gantt" id="gantt">
+        <div class="gh" style="grid-column:2" data-start="2026-10-26" data-end="2026-11-01"><b>W1</b><span>10/26</span></div>
+        <div class="gh" style="grid-column:3" data-start="2026-11-02" data-end="2026-11-08"><b>W2</b><span>11/2</span></div>
+        <div class="gh" style="grid-column:4" data-start="2026-11-09" data-end="2026-11-15"><b>W3</b><span>11/9</span></div>
+        <div class="gh" style="grid-column:5" data-start="2026-11-16" data-end="2026-11-22"><b>W4</b><span>11/16</span></div>
+        <div class="gh" style="grid-column:6" data-start="2026-11-23" data-end="2026-11-29"><b>W5</b><span>11/23</span></div>
+        <div class="gh" style="grid-column:7" data-start="2026-11-30" data-end="2026-12-06"><b>W6</b><span>11/30</span></div>
+        <div class="gh" style="grid-column:8" data-start="2026-12-07" data-end="2026-12-13"><b>W7</b><span>12/7</span></div>
+        <div class="gh" style="grid-column:9" data-start="2026-12-14" data-end="2026-12-20"><b>W8</b><span>12/14</span></div>
+        <div class="gh" style="grid-column:10" data-start="2026-12-21" data-end="2026-12-27"><b>W9</b><span>12/21</span></div>
+        <div class="gh" style="grid-column:11" data-start="2026-12-28" data-end="2027-01-03"><b>W10</b><span>12/28</span></div>
+        <div class="gh d" style="grid-column:12" data-start="2027-01-04" data-end="2027-01-04"><b>LIVE</b><span>1/4</span></div>
+
+        <div class="rl" style="grid-row:2">里程碑</div>
+        <div class="ms" style="grid-row:2;grid-column:3">對學生公布</div>
+        <div class="ms" style="grid-row:2;grid-column:9">初選</div>
+        <div class="ms" style="grid-row:2;grid-column:10">12/21 公布決賽組</div>
+        <div class="ms" style="grid-row:2;grid-column:11">總彩排</div>
+        <div class="ms d" style="grid-row:2;grid-column:12">直播</div>
+
+        <div class="rl" style="grid-row:3"><span class="tag a">A</span>賽務</div>
+        <div class="gbar a" style="grid-row:3;grid-column:2">定賽制與評分</div>
+        <div class="gbar a" style="grid-row:3;grid-column:3">公布・邀評審</div>
+        <div class="gbar a" style="grid-row:3;grid-column:6 / span 2">決賽計分方式</div>
+        <div class="gbar a" style="grid-row:3;grid-column:9">初選</div>
+        <div class="gbar a" style="grid-row:3;grid-column:10">公布名單・寄評審資料</div>
+        <div class="gbar a" style="grid-row:3;grid-column:11">簡報定稿</div>
+        <div class="gbar a" style="grid-row:3;grid-column:12">決賽組報到</div>
+
+        <div class="rl" style="grid-row:4"><span class="tag b">B</span>節目</div>
+        <div class="gbar b" style="grid-row:4;grid-column:2">定直播平台</div>
+        <div class="gbar b" style="grid-row:4;grid-column:3">邀主持人</div>
+        <div class="gbar b" style="grid-row:4;grid-column:4 / span 2">設備場地・節目流程表</div>
+        <div class="gbar b" style="grid-row:4;grid-column:6 / span 2">主持人腳本框架</div>
+        <div class="gbar b" style="grid-row:4;grid-column:8">技術測試</div>
+        <div class="gbar b" style="grid-row:4;grid-column:10">補完主持人腳本</div>
+        <div class="gbar b" style="grid-row:4;grid-column:11">總彩排</div>
+        <div class="gbar b" style="grid-row:4;grid-column:12">架設・技術確認</div>
+
+        <div class="rl" style="grid-row:5"><span class="tag c">C</span>視覺</div>
+        <div class="gbar c" style="grid-row:5;grid-column:4 / span 2">主視覺定案</div>
+        <div class="gbar c" style="grid-row:5;grid-column:6 / span 2">直播畫面模板</div>
+        <div class="gbar c" style="grid-row:5;grid-column:10">套入決賽組素材</div>
       </div>
     </div>
   </section>
@@ -347,7 +443,7 @@ footer { color: var(--muted); font-size: 12.5px; }
     </div>
   </section>
 
-  <footer>週次以星期一為一週開始。目前所在週會在左側標示「本週」。</footer>
+  <footer>週次以星期一為一週開始。目前所在週會在總覽圖中以深色直欄標出，在每週進度中標示「本週」。手機上可以左右滑動總覽圖。</footer>
 </div>
 
 <script>
@@ -357,6 +453,18 @@ footer { color: var(--muted); font-size: 12.5px; }
   var days = Math.round((live - today) / 86400000);
   document.getElementById('countdown').textContent = days > 0 ? days : (days === 0 ? '今天' : '已結束');
   function parse(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  var gantt = document.getElementById('gantt');
+  for (var col = 2; col <= 12; col++) {
+    var g = document.createElement('div'); g.className = 'guide'; g.style.gridColumn = col;
+    gantt.insertBefore(g, gantt.firstChild);
+  }
+  gantt.querySelectorAll('.gh').forEach(function (h) {
+    if (today >= parse(h.dataset.start) && today <= parse(h.dataset.end)) {
+      h.classList.add('now');
+      var band = document.createElement('div'); band.className = 'band'; band.style.gridColumn = h.style.gridColumn;
+      gantt.insertBefore(band, gantt.firstChild);
+    }
+  });
   document.querySelectorAll('.seg').forEach(function (seg) {
     var s = parse(seg.dataset.start), e = parse(seg.dataset.end);
     if (today >= s && today <= e) {
